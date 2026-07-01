@@ -5,6 +5,7 @@
 
 int main()
 {
+    fnEngine();
     // run this before adding anything else to make sure library works
     SDL_Init(SDL_INIT_VIDEO);
 
