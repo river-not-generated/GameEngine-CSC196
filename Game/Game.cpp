@@ -5,6 +5,7 @@
 
 int main()
 {
+    // run this before adding anything else to make sure library works
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window* window = SDL_CreateWindow("SDL3 Project", 1280, 1024, 0);
