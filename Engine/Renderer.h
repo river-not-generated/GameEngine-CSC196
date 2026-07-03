@@ -13,6 +13,7 @@ namespace nu
 
 		void SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
 		void SetColour(SDL_Color colour);
+		void SetColourRandom();
 
 		void DrawPoint(float x, float y);
 		void DrawFillRect(float x, float y, float width, float height);
@@ -22,6 +23,8 @@ namespace nu
 		void DrawLine(float x1, float y1, float x2, float y2);
 
 		void DrawDebugText(float x, float y, const char* text);
+
+		void Delay(int ms);
 
 		void Shutdown();
 

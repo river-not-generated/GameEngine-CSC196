@@ -44,6 +44,10 @@ namespace nu
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
     }
 
+    void Renderer::SetColourRandom() {
+        SetColour(rand() % 256, rand() % 256, rand() % 256);
+    }
+
     void Renderer::DrawPoint(float x, float y) {
         SDL_RenderPoint(m_renderer, x, y);
     }
@@ -73,6 +77,10 @@ namespace nu
     void Renderer::DrawDebugText(float x, float y, const char* text)
     {
         SDL_RenderDebugText(m_renderer, x, y, text);
+    }
+
+    void Renderer::Delay(int ms) {
+        SDL_Delay(ms);
     }
 
 
