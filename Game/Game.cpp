@@ -1,7 +1,9 @@
 #include "Engine.h"
-#include "SDL3/SDL.h"
-
 #include <iostream>
+#include <vector>
+
+using namespace nu;
+using namespace std;
 
 int main()
 {
@@ -12,11 +14,27 @@ int main()
     const int WIN_WIDTH = 1024;
     const int WIN_HEIGHT = 1080;
 
+    const int starcount = 10000;
+
     r.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
 
-    SDL_Event e;
-    bool quit = false;
+    float xs[30];
+    float ys[30];
 
+    Vector2 vel{ 2.0f, 0.0f };
+
+    vector<Vector2> vs;
+
+
+    for (int i = 0; i < 30; i++) {
+        xs[i] = RandomFloat(WIN_WIDTH);
+        ys[i] = RandomFloat(WIN_HEIGHT);
+    }
+
+    for (int i = 0; i < starcount; i++) {
+        Vector2 vec(RandomFloat(WIN_WIDTH), RandomFloat(WIN_HEIGHT));
+        vs.push_back(vec);
+    }
 
     SDL_FRect colouredSquare{ (WIN_WIDTH / 2) - 25, (WIN_HEIGHT / 2) - 25, 50, 50 };
     SDL_Color colour{ 60, 255, 150, 255 };
@@ -27,6 +45,9 @@ int main()
 
     int incrementer = 0;
 
+    // main loop
+    SDL_Event e;
+    bool quit = false;
     while (!quit) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_EVENT_QUIT) {
@@ -52,22 +73,23 @@ int main()
         r.SetColour(colour);
         r.DrawFillRect(&colouredSquare);
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < vs.size(); i++) {
             r.SetColourRandom();
-            r.DrawPoint(rand() % WIN_WIDTH, rand() % WIN_HEIGHT);
+            r.DrawPoint(vs.at(i).x, vs.at(i).y);
+            vs.at(i) = vs.at(i) + vel;
         }
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i += 2) {
             r.SetColourRandom();
-            r.DrawLine(rand() % WIN_WIDTH, rand() % WIN_HEIGHT, rand() % WIN_WIDTH, rand() % WIN_HEIGHT);
+            r.DrawLine(xs[i], ys[i], xs[i + 1], ys[i + 1]);
         }
 
         for (int i = 0; i < 3; i++) {
             r.SetColourRandom();
             int width = rand() % 200;
             int height = rand() % 200;
-            r.DrawFillRect(rand() % WIN_WIDTH - width, rand() % WIN_HEIGHT - height, width, height);
+            r.DrawFillRect(RandomFloat(WIN_WIDTH - width), RandomFloat(WIN_HEIGHT - height), (float) width, (float) height);
         }
 
         r.SetColour(255, 255, 255);

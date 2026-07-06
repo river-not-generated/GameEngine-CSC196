@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Renderer.h"
+#include "Random.h"
 
 #include <iostream>
 
@@ -40,12 +41,20 @@ namespace nu
         SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
     }
 
+    void Renderer::SetColourFloat(float r, float g, float b, float a) {
+        SDL_SetRenderDrawColorFloat(m_renderer, r, g, b, a);
+    }
+
     void Renderer::SetColour(SDL_Color colour) {
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
     }
 
     void Renderer::SetColourRandom() {
-        SetColour(rand() % 256, rand() % 256, rand() % 256);
+        SetColour(RandomInt(256), RandomInt(256), RandomInt(256));
+    }
+
+    void Renderer::SetColourRandomFloat() {
+        SetColourFloat(RandomFloat(255), RandomFloat(255), RandomFloat(255));
     }
 
     void Renderer::DrawPoint(float x, float y) {

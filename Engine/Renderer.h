@@ -2,6 +2,7 @@
 
 #include "SDL3/SDL.h"
 
+
 namespace nu
 {
 	class Renderer {
@@ -12,8 +13,10 @@ namespace nu
 		void Present();
 
 		void SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+		void SetColourFloat(float r, float g, float b, float a = 1);
 		void SetColour(SDL_Color colour);
 		void SetColourRandom();
+		void SetColourRandomFloat();
 
 		void DrawPoint(float x, float y);
 		void DrawFillRect(float x, float y, float width, float height);
