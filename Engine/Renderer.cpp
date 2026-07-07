@@ -45,7 +45,7 @@ namespace nu
         SDL_SetRenderDrawColorFloat(m_renderer, r, g, b, a);
     }
 
-    void Renderer::SetColour(SDL_Color colour) {
+    void Renderer::SetColour(const SDL_Color& colour) {
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
     }
 

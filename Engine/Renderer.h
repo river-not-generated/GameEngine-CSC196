@@ -14,7 +14,7 @@ namespace nu
 
 		void SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
 		void SetColourFloat(float r, float g, float b, float a = 1);
-		void SetColour(SDL_Color colour);
+		void SetColour(const SDL_Color& colour);
 		void SetColourRandom();
 		void SetColourRandomFloat();
 

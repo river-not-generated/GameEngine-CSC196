@@ -9,14 +9,17 @@ int main()
 {
     fnEngine();
 
-    nu::Renderer r;
+    nu::Renderer renderer;
+
+    nu::Input input;
+    input.Initialize();
 
     const int WIN_WIDTH = 1024;
     const int WIN_HEIGHT = 1080;
 
     const int starcount = 10000;
 
-    r.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
+    renderer.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
 
     float xs[30];
     float ys[30];
@@ -53,7 +56,20 @@ int main()
             if (e.type == SDL_EVENT_QUIT) {
                 quit = true;
             }
+            if (e.type == SDL_EVENT_KEY_DOWN && e.key.scancode == SDL_SCANCODE_ESCAPE) {
+                quit = true;
+            }
         }
+
+
+        input.Update();
+
+        if (input.GetKeyDown(SDL_SCANCODE_Q)) std::cout << "Q down" << std::endl;
+        if (input.GetKeyPressed(SDL_SCANCODE_W)) std::cout << "W pressed" << std::endl;
+        if (input.GetKeyReleased(SDL_SCANCODE_E)) std::cout << "E released" << std::endl;
+
+        Vector2 mousePosition;
+        SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
         if (colour.r == 255) rIncrease = false;
         if (colour.r == 0) rIncrease = true;
@@ -67,40 +83,27 @@ int main()
         colour.b = (bIncrease ? colour.b + 1 : colour.b - 1);
 
 
-        r.SetColour(0, 0, 0);
-        r.Clear(); // Clear the renderer
+        renderer.SetColour(0, 0, 0);
+        renderer.Clear(); // Clear the renderer
 
-        r.SetColour(colour);
-        r.DrawFillRect(&colouredSquare);
+        renderer.SetColour(colour);
+        renderer.DrawFillRect(&colouredSquare);
 
         for (int i = 0; i < vs.size(); i++) {
-            r.SetColourRandom();
-            r.DrawPoint(vs.at(i).x, vs.at(i).y);
-            vs.at(i) = vs.at(i) + vel;
+            renderer.SetColourRandom();
+            renderer.DrawPoint(vs.at(i).x, vs.at(i).y);
         }
 
+        renderer.SetColour(150, 220, 20);
+        renderer.DrawFillRect(input.GetMousePosition().x - 20, input.GetMousePosition().y - 20, 40, 40);
 
-        for (int i = 0; i < 30; i += 2) {
-            r.SetColourRandom();
-            r.DrawLine(xs[i], ys[i], xs[i + 1], ys[i + 1]);
-        }
+        renderer.SetColour(255, 255, 255);
+        renderer.DrawDebugText(30, 30, "press ESC to quit");
 
-        for (int i = 0; i < 3; i++) {
-            r.SetColourRandom();
-            int width = rand() % 200;
-            int height = rand() % 200;
-            r.DrawFillRect(RandomFloat(WIN_WIDTH - width), RandomFloat(WIN_HEIGHT - height), (float) width, (float) height);
-        }
-
-        r.SetColour(255, 255, 255);
-        r.DrawDebugText(30, 30, "debug text");
-
-        r.Present(); // Render the screen
-
-        r.Delay(250);
+        renderer.Present(); // Render the screen
     }
 
-    r.Shutdown();
+    renderer.Shutdown();
 
     return 0;
 
