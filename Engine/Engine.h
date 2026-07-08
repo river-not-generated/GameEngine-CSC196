@@ -5,6 +5,7 @@
 
 #include "Renderer.h"
 #include "Input.h"
+#include "GameTime.h"
 
 
 void fnEngine();

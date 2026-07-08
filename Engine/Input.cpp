@@ -28,4 +28,11 @@ namespace nu {
 	void Input::Shutdown() {
 		//
 	}
+
+	uint32_t Input::GetButtonBit(MouseButton button) const {
+		// 1 = 0001
+		// 2 = 0010
+		// 3 = 0100 (which is 4...)
+		return SDL_BUTTON_MASK((uint32_t) button);
+	}
 }

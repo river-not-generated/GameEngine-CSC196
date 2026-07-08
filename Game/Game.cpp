@@ -17,30 +17,20 @@ int main()
     const int WIN_WIDTH = 1024;
     const int WIN_HEIGHT = 1080;
 
-    const int starcount = 10000;
-
     renderer.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
 
-    float xs[30];
-    float ys[30];
+    vector<Vector2> points;
+    Vector2 position{ WIN_WIDTH / 2, WIN_HEIGHT / 2 };
+    float speed = 400;
 
-    Vector2 vel{ 2.0f, 0.0f };
+    uint64_t ticks = SDL_GetTicksNS();
+    uint64_t prevTicks = ticks;
 
-    vector<Vector2> vs;
+    Time time;
 
-
-    for (int i = 0; i < 30; i++) {
-        xs[i] = RandomFloat(WIN_WIDTH);
-        ys[i] = RandomFloat(WIN_HEIGHT);
-    }
-
-    for (int i = 0; i < starcount; i++) {
-        Vector2 vec(RandomFloat(WIN_WIDTH), RandomFloat(WIN_HEIGHT));
-        vs.push_back(vec);
-    }
-
-    SDL_FRect colouredSquare{ (WIN_WIDTH / 2) - 25, (WIN_HEIGHT / 2) - 25, 50, 50 };
+    SDL_FRect colouredSquare{ (WIN_WIDTH) - 75, 25, 50, 50 };
     SDL_Color colour{ 60, 255, 150, 255 };
+    SDL_Color drawColour{ colour };
 
     bool rIncrease = true;
     bool gIncrease = false;
@@ -61,27 +51,50 @@ int main()
             }
         }
 
-
         input.Update();
+        time.Tick();
 
-        if (input.GetKeyDown(SDL_SCANCODE_Q)) std::cout << "Q down" << std::endl;
-        if (input.GetKeyPressed(SDL_SCANCODE_W)) std::cout << "W pressed" << std::endl;
-        if (input.GetKeyReleased(SDL_SCANCODE_E)) std::cout << "E released" << std::endl;
+
+        Vector2 velocity{ 0, 0 };
+        if (input.GetKeyDown(SDL_SCANCODE_A)) {
+            velocity.x -= speed;
+        }
+        if (input.GetKeyDown(SDL_SCANCODE_D)) {
+            velocity.x += speed;
+        }
+        if (input.GetKeyDown(SDL_SCANCODE_W)) {
+            velocity.y -= speed;
+        }
+        if (input.GetKeyDown(SDL_SCANCODE_S)) {
+            velocity.y += speed;
+        }
+        position += (velocity * time.GetDeltaTime());
 
         Vector2 mousePosition;
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
-        if (colour.r == 255) rIncrease = false;
-        if (colour.r == 0) rIncrease = true;
-        if (colour.g == 255) gIncrease = false;
-        if (colour.g == 0) gIncrease = true;
-        if (colour.b == 255) bIncrease = false;
-        if (colour.b == 0) bIncrease = true;
+        incrementer = (incrementer == 3 ? 0 : incrementer + 1);
 
-        colour.r = (rIncrease ? colour.r + 1 : colour.r - 1);
-        colour.g = (gIncrease ? colour.g + 1 : colour.g - 1);
-        colour.b = (bIncrease ? colour.b + 1 : colour.b - 1);
+        if (incrementer == 0) {
+            if (colour.r == 255) rIncrease = false;
+            if (colour.r == 0) rIncrease = true;
+            if (colour.g == 255) gIncrease = false;
+            if (colour.g == 0) gIncrease = true;
+            if (colour.b == 255) bIncrease = false;
+            if (colour.b == 0) bIncrease = true;
 
+            colour.r = (rIncrease ? colour.r + 1 : colour.r - 1);
+            colour.g = (gIncrease ? colour.g + 1 : colour.g - 1);
+            colour.b = (bIncrease ? colour.b + 1 : colour.b - 1);
+        }
+
+
+        if (input.GetMouseDown(Input::MouseButton::Left)) {
+            points.push_back(input.GetMousePosition());
+        }
+        if (input.GetKeyPressed(SDL_SCANCODE_C)) {
+            drawColour = colour;
+        }
 
         renderer.SetColour(0, 0, 0);
         renderer.Clear(); // Clear the renderer
@@ -89,13 +102,14 @@ int main()
         renderer.SetColour(colour);
         renderer.DrawFillRect(&colouredSquare);
 
-        for (int i = 0; i < vs.size(); i++) {
-            renderer.SetColourRandom();
-            renderer.DrawPoint(vs.at(i).x, vs.at(i).y);
+        renderer.SetColour(drawColour);
+
+        for (int i = 0; i < points.size(); i++) {
+            renderer.DrawFillRect(points.at(i).x - 1, points.at(i).y - 1, 2, 2);
         }
 
         renderer.SetColour(150, 220, 20);
-        renderer.DrawFillRect(input.GetMousePosition().x - 20, input.GetMousePosition().y - 20, 40, 40);
+        renderer.DrawFillRect(position.x - 5, position.y - 5, 10, 10);
 
         renderer.SetColour(255, 255, 255);
         renderer.DrawDebugText(30, 30, "press ESC to quit");
