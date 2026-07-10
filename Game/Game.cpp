@@ -68,41 +68,42 @@ class BrushStroke {
 
 int main()
 {
+    // confirm the engine is connected
     fnEngine();
 
+    // initialize the renderer and input handlers
     nu::Renderer renderer;
-
+    renderer.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
     nu::Input input;
     input.Initialize();
 
-
-
-    renderer.Initialize("Project1", WIN_WIDTH, WIN_HEIGHT);
-
-    vector<BrushStroke> art;
-    vector<Vector2> points;
-    Vector2 position{ WIN_WIDTH / 2, WIN_HEIGHT / 2 };
-
-    float speed = 400;
-
+    // game time handline
     uint64_t ticks = SDL_GetTicksNS();
     uint64_t prevTicks = ticks;
-
     Time time;
 
+    // program-specific variables
+    vector<BrushStroke> brushStrokes;
+    Vector2 position{ WIN_WIDTH / 2, WIN_HEIGHT / 2 };
+    float speed = 400;
     Actor player{ Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 10.0f } };
 
+    // the square up in the top corner of the window
     SDL_FRect colouredSquare{ (WIN_WIDTH) - 75, 25, 50, 50 };
-    SDL_Color colour{ 60, 255, 150, 255 };
-    SDL_Color drawColour{ colour };
+    SDL_Color squareColour{ 60, 255, 150, 255 };
+    SDL_Color drawColour{ squareColour };
 
+    // booleans that handle the direction of the gradient colour
     bool rIncrease = true;
     bool gIncrease = false;
     bool bIncrease = false;
 
     int incrementer = 0;
 
-    // main loop
+    // -----------------
+    // --- MAIN LOOP ---
+    // -----------------
+
     SDL_Event e;
     bool quit = false;
     while (!quit) {
@@ -118,68 +119,81 @@ int main()
         input.Update();
         time.Tick();
 
+        // movement control for the player square (WASD or arrows)
         Vector2 force{ 0.0f, 0.0f };
-        if (input.GetKeyDown(SDL_SCANCODE_A)) {
+        if (input.GetKeyDown(SDL_SCANCODE_A) || input.GetKeyDown(SDL_SCANCODE_LEFT)) {
             force.x -= speed;
         }
-        if (input.GetKeyDown(SDL_SCANCODE_D)) {
+        if (input.GetKeyDown(SDL_SCANCODE_D) || input.GetKeyDown(SDL_SCANCODE_RIGHT)) {
             force.x += speed;
         }
-        if (input.GetKeyDown(SDL_SCANCODE_W)) {
+        if (input.GetKeyDown(SDL_SCANCODE_W) || input.GetKeyDown(SDL_SCANCODE_UP)) {
             force.y -= speed;
         }
-        if (input.GetKeyDown(SDL_SCANCODE_S)) {
+        if (input.GetKeyDown(SDL_SCANCODE_S) || input.GetKeyDown(SDL_SCANCODE_DOWN)) {
             force.y += speed;
         }
         player.SetVelocity(player.GetVelocity() + (force * time.GetDeltaTime()));
         player.Update(time.GetDeltaTime());
 
-
+        // get the current position & state of the mouse
         Vector2 mousePosition;
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 
+        // gradually change the colour of The Square
         incrementer = (incrementer == 3 ? 0 : incrementer + 1);
 
         if (incrementer == 0) {
-            if (colour.r == 255) rIncrease = false;
-            if (colour.r == 0) rIncrease = true;
-            if (colour.g == 255) gIncrease = false;
-            if (colour.g == 0) gIncrease = true;
-            if (colour.b == 255) bIncrease = false;
-            if (colour.b == 0) bIncrease = true;
+            if (squareColour.r == 255) rIncrease = false;
+            if (squareColour.r == 0) rIncrease = true;
+            if (squareColour.g == 255) gIncrease = false;
+            if (squareColour.g == 0) gIncrease = true;
+            if (squareColour.b == 255) bIncrease = false;
+            if (squareColour.b == 0) bIncrease = true;
 
-            colour.r = (rIncrease ? colour.r + 1 : colour.r - 1);
-            colour.g = (gIncrease ? colour.g + 1 : colour.g - 1);
-            colour.b = (bIncrease ? colour.b + 1 : colour.b - 1);
+            squareColour.r = (rIncrease ? squareColour.r + 1 : squareColour.r - 1);
+            squareColour.g = (gIncrease ? squareColour.g + 1 : squareColour.g - 1);
+            squareColour.b = (bIncrease ? squareColour.b + 1 : squareColour.b - 1);
         }
 
+        // if C is pressed change the draw colour to the current value of colour
+        // which is visualized up in the top corner (the gradient square)
         if (input.GetKeyPressed(SDL_SCANCODE_C)) {
-            drawColour = colour;
+            drawColour = squareColour;
         }
 
+        // upon starting a new line (initial LMB press) add a brush stroke object containing the current mouse position and draw colour
         if (input.GetMousePressed(Input::MouseButton::Left)) {
-            // upon starting a new line add a brush stroke containing the current mouse position and colour
-            art.push_back(BrushStroke{ Vector2{input.GetMousePosition()}, drawColour});
+            brushStrokes.push_back(BrushStroke{ Vector2{input.GetMousePosition()}, drawColour});
         }
 
+        // if they continue holding down LMB then add points whenever the position changes by more than 2 pixels
+        // the assignment says 10 but I like some precision in my drawing program
         if (input.GetMouseDown(Input::MouseButton::Left)) {
-            Vector2 v = art.back().m_points.back() - input.GetMousePosition();
-            if (v.Length() > 1) {
-                art.back().m_points.push_back(input.GetMousePosition());
+            Vector2 v = brushStrokes.back().m_points.back() - input.GetMousePosition();
+            if (v.Length() > 2) {
+                brushStrokes.back().m_points.push_back(input.GetMousePosition());
             }
         }
-        if (input.GetMousePressed(Input::MouseButton::Right) && !input.GetMouseDown(Input::MouseButton::Left)) {
-            if (!art.empty()) art.pop_back();
+
+        // if not currently drawing a line, undo if you press Z or RMB
+        if ((input.GetMousePressed(Input::MouseButton::Right) || (input.GetKeyPressed(SDL_SCANCODE_Z)) && !input.GetMouseDown(Input::MouseButton::Left))) {
+            if (!brushStrokes.empty()) brushStrokes.pop_back();
         }
+
+
+        // ---------------
+        // --- DRAWING ---
+        // ---------------
 
         renderer.SetColour(0, 0, 0);
         renderer.Clear(); // Clear the renderer
 
-        renderer.SetColour(colour);
+        renderer.SetColour(squareColour);
         renderer.DrawFillRect(&colouredSquare);
 
         // for each brush stroke
-        for (const BrushStroke& line : art) {
+        for (const BrushStroke& line : brushStrokes) {
             // set the colour to the current brush stroke colour
             renderer.SetColour(line.m_colour);
 
@@ -194,15 +208,18 @@ int main()
             }
         }
 
-        // character
+        // draw the moveable cube
         player.Draw(renderer);
 
         renderer.SetColour(255, 255, 255);
-        renderer.DrawDebugText(30, 30, "press ESC to quit");
+        renderer.DrawDebugText(30, 30, "C to change colour");
+        renderer.DrawDebugText(30, 50, "RMB or Z to undo");
+        renderer.DrawDebugText(30, 70, "ESC to quit");
 
-        renderer.Present(); // Render the screen
+        renderer.Present(); // render the screen
     }
 
+    // shut down the program cleanly upon exiting (either through the X button or escape)
     renderer.Shutdown();
 
     return 0;

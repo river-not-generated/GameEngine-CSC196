@@ -8,5 +8,5 @@
 // TODO: This is an example of a library function
 void fnEngine()
 {
-	std::cout << "library connected" << std::endl;
+	std::cout << "engine connected" << std::endl;
 }
