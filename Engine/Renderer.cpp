@@ -38,54 +38,54 @@ namespace nu
     }
 
 
-    void Renderer::SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+    void Renderer::SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
     {
         SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
     }
 
-    void Renderer::SetColourFloat(float r, float g, float b, float a) {
+    void Renderer::SetColourFloat(float r, float g, float b, float a) const {
         SDL_SetRenderDrawColorFloat(m_renderer, r, g, b, a);
     }
 
-    void Renderer::SetColour(const SDL_Color& colour) {
+    void Renderer::SetColour(const SDL_Color& colour) const {
         SDL_SetRenderDrawColor(m_renderer, colour.r, colour.g, colour.b, colour.a);
     }
 
-    void Renderer::SetColourRandom() {
+    void Renderer::SetColourRandom() const {
         SetColour(RandomInt(256), RandomInt(256), RandomInt(256));
     }
 
-    void Renderer::SetColourRandomFloat() {
+    void Renderer::SetColourRandomFloat() const {
         SetColourFloat(RandomFloat(255), RandomFloat(255), RandomFloat(255));
     }
 
-    void Renderer::DrawPoint(float x, float y) {
+    void Renderer::DrawPoint(float x, float y) const {
         SDL_RenderPoint(m_renderer, x, y);
     }
 
-    void Renderer::DrawFillRect(float x, float y, float width, float height) {
+    void Renderer::DrawFillRect(float x, float y, float width, float height) const {
         SDL_FRect rect{ x, y, width, height };
         SDL_RenderFillRect(m_renderer, &rect);
     }
 
-    void Renderer::DrawFillRect(const SDL_FRect* rect) {
+    void Renderer::DrawFillRect(const SDL_FRect* rect) const {
         SDL_RenderFillRect(m_renderer, rect);
     }
 
-    void Renderer::DrawRect(float x, float y, float width, float height) {
+    void Renderer::DrawRect(float x, float y, float width, float height) const {
         SDL_FRect rect{ x, y, width, height };
         SDL_RenderRect(m_renderer, &rect);
     }
 
-    void Renderer::DrawRect(const SDL_FRect* rect) {
+    void Renderer::DrawRect(const SDL_FRect* rect) const {
         SDL_RenderRect(m_renderer, rect);
     }
 
-    void Renderer::DrawLine(float x1, float y1, float x2, float y2) {
+    void Renderer::DrawLine(float x1, float y1, float x2, float y2) const {
         SDL_RenderLine(m_renderer, x1, y1, x2, y2);
     }
 
-    void Renderer::DrawDebugText(float x, float y, const char* text)
+    void Renderer::DrawDebugText(float x, float y, const char* text) const
     {
         SDL_RenderDebugText(m_renderer, x, y, text);
     }
