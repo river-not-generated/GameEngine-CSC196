@@ -12,6 +12,9 @@ namespace nu
 		void Clear();
 		void Present();
 
+		int GetWindowWidth();
+		int GetWindowHeight();
+
 		void SetColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255) const;
 		void SetColourFloat(float r, float g, float b, float a = 1) const;
 		void SetColour(const SDL_Color& colour) const;
@@ -34,5 +37,8 @@ namespace nu
 	private:
 		SDL_Window* m_window = nullptr;
 		SDL_Renderer* m_renderer = nullptr;
+
+		int m_width = 1024;
+		int m_height = 1080;
 	};
 };

@@ -16,6 +16,8 @@ namespace nu
             SDL_Quit();
             return false;
         }
+        m_width = width;
+        m_height = height;
 
         m_renderer = SDL_CreateRenderer(m_window, NULL);
         if (m_renderer == nullptr) {
@@ -35,6 +37,16 @@ namespace nu
 
     void Renderer::Present() {
         SDL_RenderPresent(m_renderer);
+    }
+
+    int Renderer::GetWindowWidth()
+    {
+        return m_width;
+    }
+
+    int Renderer::GetWindowHeight()
+    {
+        return m_height;
     }
 
 

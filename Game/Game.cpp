@@ -5,59 +5,8 @@
 using namespace nu;
 using namespace std;
 
-
 const int WIN_WIDTH = 1024;
 const int WIN_HEIGHT = 1080;
-
-struct Transform {
-    Vector2 position;
-    float rotation;
-    float scale;
-};
-
-class Actor {
-    public:
-        Actor() = default;
-        Actor(const Transform& transform) : m_transform{ transform } {}
-
-        void Update(float dt) {
-            m_transform.position += (m_velocity * dt);
-            m_velocity *= 0.997f;
-
-            m_transform.position.x = math::Wrap(0.0f, (float)WIN_WIDTH, m_transform.position.x);
-            m_transform.position.y = math::Wrap(0.0f, (float)WIN_HEIGHT, m_transform.position.y);
-        }
-
-        void Draw(const Renderer& renderer) const {
-            renderer.SetColour(150, 220, 20);
-            renderer.DrawFillRect(m_transform.position.x - (m_transform.scale * 0.5f)
-                , m_transform.position.y - (m_transform.scale * 0.5f)
-                , m_transform.scale, m_transform.scale);
-        }
-        const Transform& GetTransform() const {
-            return m_transform;
-        }
-        const Vector2& GetVelocity() const {
-            return m_velocity;
-        }
-
-        void SetVelocity(const Vector2& velocity) {
-            m_velocity = velocity;
-        }
-        void SetPosition(const Vector2& position) {
-            m_transform.position = position;
-        }
-        void SetRotation(float rotation) {
-            m_transform.rotation = rotation;
-        }
-        void SetScale(float scale) {
-            m_transform.scale = scale;
-        }
-
-    protected:
-        Transform m_transform;
-        Vector2 m_velocity{ 0.0f, 0.0f };
-};
 
 class BrushStroke {
     public:
