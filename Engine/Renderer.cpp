@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Renderer.h"
 #include "Random.h"
+#include "Transform.h"
+#include "Model.h"
 
 #include <iostream>
 
@@ -95,6 +97,28 @@ namespace nu
 
     void Renderer::DrawLine(float x1, float y1, float x2, float y2) const {
         SDL_RenderLine(m_renderer, x1, y1, x2, y2);
+    }
+
+    void Renderer::DrawModel(const class Model& model, const struct Transform& trans) const {
+        for (auto mesh : model.GetMeshes()) {
+
+            auto& points = mesh.GetPoints();
+            SetColour(mesh.GetColour().r, mesh.GetColour().g, mesh.GetColour().b);
+
+            for (int i = 0; i + 1 < points.size(); i++) {
+                Vector2 v1 = points.at(i);
+                Vector2 v2 = points.at(i + 1);
+
+                // convert to world space
+                v1 *= trans.scale;
+                v2 *= trans.scale;
+
+                v1 += trans.position;
+                v2 += trans.position;
+
+                DrawLine(v1.x, v1.y, v2.x, v2.y);
+            }
+        }
     }
 
     void Renderer::DrawDebugText(float x, float y, const char* text) const

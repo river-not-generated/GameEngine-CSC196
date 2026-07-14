@@ -2,7 +2,6 @@
 
 #include "SDL3/SDL.h"
 
-
 namespace nu
 {
 	class Renderer {
@@ -27,6 +26,8 @@ namespace nu
 		void DrawRect(float x, float y, float width, float height) const;
 		void DrawRect(const SDL_FRect* rect) const;
 		void DrawLine(float x1, float y1, float x2, float y2) const;
+
+		void DrawModel(const class Model& model, const struct Transform& trans) const;
 
 		void DrawDebugText(float x, float y, const char* text) const;
 

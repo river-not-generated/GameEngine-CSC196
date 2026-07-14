@@ -31,11 +31,14 @@ int main()
     uint64_t prevTicks = ticks;
     Time time;
 
+
+    Mesh mesh({ Vector2{-3, 3}, Vector2{3, 3}, Vector2{0 ,0} }, Colour{ 255, 255, 255 });
+    Actor player{ Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 10.0f }, vector<Mesh>{mesh} };
+
     // program-specific variables
     vector<BrushStroke> brushStrokes;
     Vector2 position{ WIN_WIDTH / 2, WIN_HEIGHT / 2 };
     float speed = 400;
-    Actor player{ Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 10.0f } };
 
     // the square up in the top corner of the window
     SDL_FRect colouredSquare{ (WIN_WIDTH) - 75, 25, 50, 50 };
