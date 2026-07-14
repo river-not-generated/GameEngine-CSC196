@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <cmath>
 #include <cassert>
 
@@ -120,17 +118,13 @@ namespace nu
 		}
 
 
-		// TODO: update math for LengthSqr and Length
-		// a^2 + b^2 = c^2
 		float LengthSqr() const {
 			return pow(x, 2) + pow(y, 2) + pow(z, 2);
 		}
 
-		// returns c
 		float Length() const {
 			return std::sqrt(LengthSqr());
 		}
-
 
 		// convert to unit vector
 		Vector3 Normalized() const {
