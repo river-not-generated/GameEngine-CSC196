@@ -3,6 +3,7 @@
 #include "Random.h"
 #include "Transform.h"
 #include "Model.h"
+#include "MathUtils.h"
 
 #include <iostream>
 
@@ -112,6 +113,9 @@ namespace nu
                 // convert to world space
                 v1 *= trans.scale;
                 v2 *= trans.scale;
+
+                v1 = v1.Rotate(trans.rotation * math::DEG_TO_RAD);
+                v2 = v2.Rotate(trans.rotation * math::DEG_TO_RAD);
 
                 v1 += trans.position;
                 v2 += trans.position;
