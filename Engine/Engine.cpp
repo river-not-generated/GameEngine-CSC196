@@ -15,6 +15,7 @@ namespace nu
 	bool Engine::Initialize(float width, float height) {
 		m_renderer.Initialize("Game Engine", width, height);
 		m_input.Initialize();
+		m_audio.Initialize();
 		fnEngine();
 
 		return true;
@@ -27,6 +28,7 @@ namespace nu
 
 	void Engine::Update() {
 		m_input.Update();
+		m_audio.Update();
 		m_time.Tick();
 	}
 }

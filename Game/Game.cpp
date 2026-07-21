@@ -23,6 +23,14 @@ int main()
     // initialize the engine
     if (engine.Initialize(WIN_WIDTH, WIN_HEIGHT) == false) return 0;
 
+    engine.GetAudio().CreateSound("bass.wav");
+    engine.GetAudio().CreateSound("open-hat.wav");
+    engine.GetAudio().CreateSound("close-hat.wav");
+    engine.GetAudio().CreateSound("snare.wav");
+    engine.GetAudio().CreateSound("clap.wav");
+    engine.GetAudio().CreateSound("cowbell.wav");
+
+    engine.GetAudio().PlaySound(5);
 
     // mesh / model
     Mesh mesh({ { 6, 0 }, { -4, -2 }, { -2, 0 }, { -4, 2 }, { 6, 0 }, }, Colour{ 255, 255, 255 });
@@ -37,7 +45,7 @@ int main()
     PlayerDesc playerDesc;
     playerDesc.name = "Player";
     playerDesc.model = playerModel;
-    playerDesc.transform = Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 20.0f };
+    playerDesc.transform = Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 5.0f };
     playerDesc.speed = 800.0f;
 
     Player* player = new Player{ playerDesc };
@@ -82,6 +90,7 @@ int main()
         float dt = engine.GetTime().GetDeltaTime();
 
         scene.Update(dt);
+
 
         // get the current position & state of the mouse
         Vector2 mousePosition;
@@ -128,6 +137,22 @@ int main()
                 && !engine.GetInput().GetMouseDown(Input::MouseButton::Left)))
         {
             if (!brushStrokes.empty()) brushStrokes.pop_back();
+        }
+
+        if ((engine.GetInput().GetKeyPressed(SDL_SCANCODE_D))) {
+            engine.GetAudio().PlaySound(0); // bass
+        }
+        if ((engine.GetInput().GetKeyPressed(SDL_SCANCODE_F))) {
+            engine.GetAudio().PlaySound(1); // open hat
+        }
+        if ((engine.GetInput().GetKeyPressed(SDL_SCANCODE_J))) {
+            engine.GetAudio().PlaySound(2); // closed hat
+        }
+        if ((engine.GetInput().GetKeyPressed(SDL_SCANCODE_K))) {
+            engine.GetAudio().PlaySound(3); // snare
+        }
+        if ((engine.GetInput().GetKeyPressed(SDL_SCANCODE_SPACE))) {
+            engine.GetAudio().PlaySound(4); // clap
         }
 
         // ---------------

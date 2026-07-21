@@ -12,6 +12,7 @@
 #include "Actor.h"
 #include "Mesh.h"
 #include "Scene.h"
+#include "Audio.h"
 
 namespace nu
 {
@@ -26,12 +27,14 @@ namespace nu
 
 			Input& GetInput() { return m_input; }
 			Renderer& GetRenderer() { return m_renderer; }
-			Time GetTime() { return m_time; }
+			Time& GetTime() { return m_time; }
+			AudioSystem& GetAudio() { return m_audio; }
 
 		private:
 			Input m_input;
 			Renderer m_renderer;
 			Time m_time;
+			AudioSystem m_audio;
 	};
 
 	extern Engine engine;
