@@ -8,8 +8,10 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "GameTime.h"
+
 #include "Actor.h"
 #include "Mesh.h"
+#include "Scene.h"
 
 namespace nu
 {

@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Player.h"
+#include "Enemy.h"
 
 #include <iostream>
 #include <vector>
@@ -22,8 +23,29 @@ int main()
     // initialize the engine
     if (engine.Initialize(WIN_WIDTH, WIN_HEIGHT) == false) return 0;
 
-    Mesh mesh({ Vector2{3, 1}, Vector2{0, 2}, Vector2{1, 1}, Vector2{0, 0}, Vector2{3, 1} }, Colour{ 255, 255, 255 });
-    Player player{ 800.0f, Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 10.0f }, vector<Mesh>{mesh} };
+
+    // mesh / model
+    Mesh mesh({ { 6, 0 }, { -4, -2 }, { -2, 0 }, { -4, 2 }, { 6, 0 }, }, Colour{ 255, 255, 255 });
+    Mesh wing1({ { 3, -1 }, { -2, -3 }, { 0, -3 }, { 3, -1 } }, Colour{125, 125, 125});
+    Mesh wing2({ { 3, 1 }, { -2, 3 }, { 0, 3 }, { 3, 1 } }, Colour{125, 125, 125});
+    Mesh flame({ { -4, 1 }, { -6, 0 }, { -4, -1 }, { -3, 0 }, { -4, 1 } }, Colour{255, 200, 0});
+    Model playerModel = std::vector<Mesh>{ mesh, wing1, wing2, flame };
+    Model enemyModel = std::vector<Mesh>{ mesh };
+
+    Scene scene;
+
+    PlayerDesc playerDesc;
+    playerDesc.name = "Player";
+    playerDesc.model = playerModel;
+    playerDesc.transform = Transform{ Vector2{ WIN_WIDTH / 2, WIN_HEIGHT / 2}, 0.0f, 20.0f };
+    playerDesc.speed = 800.0f;
+
+    Player* player = new Player{ playerDesc };
+    scene.AddActor(player);
+
+    Enemy* enemy = new Enemy{ 800.0f, Transform{ Vector2{ WIN_WIDTH / 4, WIN_HEIGHT / 4}, 90.0f, 15.0f }, enemyModel };
+    //scene.AddActor(enemy);
+
 
     // program-specific variables
     vector<BrushStroke> brushStrokes;
@@ -57,9 +79,9 @@ int main()
         }
 
         engine.Update();
+        float dt = engine.GetTime().GetDeltaTime();
 
-        player.SetRotation(player.GetTransform().rotation + engine.GetTime().GetDeltaTime() * 360.0f);
-        player.Update(engine.GetTime().GetDeltaTime());
+        scene.Update(dt);
 
         // get the current position & state of the mouse
         Vector2 mousePosition;
@@ -134,8 +156,7 @@ int main()
             }
         }
 
-        // draw the moveable cube
-        player.Draw(engine.GetRenderer());
+        scene.Draw(engine.GetRenderer());
 
         engine.GetRenderer().SetColour(255, 255, 255);
         engine.GetRenderer().DrawDebugText(30, 30, "C to change colour");

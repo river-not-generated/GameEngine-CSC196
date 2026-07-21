@@ -2,9 +2,16 @@
 
 #include "Actor.h"
 
+struct PlayerDesc : public nu::ActorDesc {
+	float speed;
+};
+
 class Player : public nu::Actor {
+
 	public:
 		Player() = default;
+		Player(const PlayerDesc& playerDesc) : Actor{ playerDesc }, m_speed{ playerDesc.speed } {}
+
 		Player(float speed, const nu::Transform& transform) : Actor{ transform } {
 			m_speed = speed; 
 		}
