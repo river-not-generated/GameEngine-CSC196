@@ -13,6 +13,7 @@
 #include "Mesh.h"
 #include "Scene.h"
 #include "Audio.h"
+#include "File.h"
 
 namespace nu
 {
